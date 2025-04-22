@@ -15,6 +15,16 @@
                     <debug>true</debug>
                 </configuration>
             </plugin>
+            <plugin>
+                <!-- mvn cobertura:cobertura coveralls:report -->
+                <groupId>org.eluder.coveralls</groupId>
+                <artifactId>coveralls-maven-plugin</artifactId>
+                <version>4.3.0</version>
+                <configuration>
+                    <!-- env variable -->
+                    <repoToken>${COVERALLS_KEY}</repoToken>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
     <dependencies>
