@@ -15,7 +15,7 @@
                     <debug>true</debug>
                 </configuration>
             </plugin>
-             <plugin>
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-site-plugin</artifactId>
                 <version>3.21.0</version>
@@ -61,9 +61,9 @@
             </plugin>
             <plugin>
                 <!-- mvn cobertura:cobertura coveralls:report -->
-                <groupId>org.eluder.coveralls</groupId>
+                <groupId>com.github.hazendaz.maven</groupId>
                 <artifactId>coveralls-maven-plugin</artifactId>
-                <version>4.3.0</version>
+                <version>4.7.0</version>
                 <configuration>
                     <!-- env variable -->
                     <repoToken>${COVERALLS_KEY}</repoToken>
