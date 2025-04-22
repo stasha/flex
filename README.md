@@ -22,13 +22,13 @@
    `git clone https://github.com/stasha/flex.git`
 2. **Build**: Compile using Maven/Gradle or your preferred build tool.
    
-   ```
+   ```bash
    cd flex
    mvn clean package
    ```
 4. **Add to Project**: Include the JAR in your classpath or add as a dependency (if published).
    
-    ```
+    ```xml
     <dependency>
         <groupId>info.stasha</groupId>
         <artifactId>flex</artifactId>
@@ -42,93 +42,123 @@ Flex provides `FlexConfiguration` for configuration and `FlexLocalization` for l
 Manage `.properties` files and system properties with dynamic interpolation and type conversion.
 
 **Example: Basic Configuration**
-- `import info.stasha.flex.FlexConfiguration;`
-- `// config.properties: message=Server running at {0} on port {1}`
-- `FlexConfiguration config = new FlexConfiguration();`
-- `config.loadConfiguration("config.properties");`
-- `String result = config.getValue("message", "localhost", 8080);`
-- `// Output: Server running at localhost on port 8080`
+
+```java
+import info.stasha.flex.FlexConfiguration;
+// config.properties: message=Server running at {0} on port {1}
+FlexConfiguration config = new FlexConfiguration();
+config.loadConfiguration("config.properties");
+String result = config.getValue("message", "localhost", 8080);
+// Output: Server running at localhost on port 8080
+```
 
 **Example: Type Conversion**
-- `// config.properties: port=Port {0}`
-- `Integer port = config.getValue("port", Integer.class, "8080");`
-- `// Output: 8080`
+
+```java
+// config.properties: port=Port {0}
+Integer port = config.getValue("port", Integer.class, "8080");
+// Output: 8080
+```
 
 **Example: Nested Interpolation**
-- `// config.properties: env=prod`
-- `// server=Server at {host, {env}}`
-- `String result = config.getValue("server", "localhost");`
-- `// Output: Server at localhost, prod`
+
+```java
+// config.properties: env=prod
+// server=Server at {0}, {1}
+String result = config.getValue("server", "localhost", "prod");
+// Output: Server at localhost, prod
+```
 
 **Example: Store Swapping**
-- `FlexStore<String, String> testStore = new FlexStoreImpl<>();`
-- `testStore.put("message", "Test server at {0}");`
-- `config.getStore().setFlexStore(testStore);`
-- `String result = config.getValue("message", "test.local");`
-- `// Output: Test server at test.local`
+
+```java
+FlexStore<String, String> testStore = new FlexStoreImpl<>();
+testStore.put("message", "Test server at {0}");
+config.getStore().setFlexStore(testStore);
+String result = config.getValue("message", "test.local");
+// Output: Test server at test.local
+```
 
 ### 2. Localization with `FlexLocalization`
 Manage multi-language strings with pluralization, nested formatting, and asset localization.
 
 **Example: Basic Localization**
-- `import info.stasha.flex.FlexLocalization;`
-- `// en-US.properties: welcome=Welcome {0}`
-- `FlexLocalization loc = new FlexLocalization();`
-- `loc.setLanguage("en-US");`
-- `String welcome = loc.getValue("welcome", String.class, "Alice");`
-- `// Output: Welcome Alice`
+
+```java
+import info.stasha.flex.FlexLocalization;
+// en-US.properties: welcome=Welcome {0}
+FlexLocalization loc = new FlexLocalization();
+loc.setLanguage("en-US");
+String welcome = loc.getValue("welcome", String.class, "Alice");
+// Output: Welcome Alice
+```
 
 **Example: Complex Pluralization and Formatting**
-- `// en-US.properties: balance=You have {0 [0=zero dollars, 1={0}.fmt.currency dollar, 2-4=few dollars, other={0}.fmt.currency dollars]} to the date {1}.fmt.date`
-- `String result = loc.getValue("balance", String.class, 1, new java.util.Date());`
-- `// Output: You have $1.00 dollar to the date Apr 23, 2025`
-- `result = loc.getValue("balance", String.class, 3, new java.util.Date());`
-- `// Output: You have few dollars to the date Apr 23, 2025`
-- `result = loc.getValue("balance", String.class, 10, new java.util.Date());`
-- `// Output: You have $10.00 dollars to the date Apr 23, 2025`
+
+```java
+// en-US.properties: balance=You have {0 [0=zero dollars, 1={0}.fmt.currency dollar, 2-4=few dollars, other={0}.fmt.currency dollars]} to the date {1}.fmt.date
+String result = loc.getValue("balance", String.class, 1, new java.util.Date());
+// Output: You have $1.00 dollar to the date Apr 23, 2025
+result = loc.getValue("balance", String.class, 3, new java.util.Date());
+// Output: You have few dollars to the date Apr 23, 2025
+result = loc.getValue("balance", String.class, 10, new java.util.Date());
+// Output: You have $10.00 dollars to the date Apr 23, 2025
+```
 
 **Example: Asset Localization**
-- `// en-US.properties: sfx={0, plural, one {sound/sfx_single.mp3} other {sound/sfx_multi.mp3}}`
-- `String sound = loc.getValue("sfx", String.class, 2);`
-- `// Output: sound/sfx_multi.mp3`
+
+```java
+// en-US.properties: sfx={0, plural, one {sound/sfx_single.mp3} other {sound/sfx_multi.mp3}}
+String sound = loc.getValue("sfx", String.class, 2);
+// Output: sound/sfx_multi.mp3
+```
 
 **Example: Language Switching**
-- `// fr-FR.properties: balance=Vous avez {0 [0=zéro euros, 1={0}.fmt.currency euro, 2-4=quelques euros, other={0}.fmt.currency euros]} à la date {1}.fmt.date`
-- `loc.setLanguage("fr-FR");`
-- `String result = loc.getValue("balance", String.class, 1, new java.util.Date());`
-- `// Output: Vous avez €1,00 euro à la date 23 avr. 2025`
+
+```java
+// fr-FR.properties: balance=Vous avez {0 [0=zéro euros, 1={0}.fmt.currency euro, 2-4=quelques euros, other={0}.fmt.currency euros]} à la date {1}.fmt.date
+loc.setLanguage("fr-FR");
+String result = loc.getValue("balance", String.class, 1, new java.util.Date());
+// Output: Vous avez €1,00 euro à la date 23 avr. 2025
+```
 
 **Example: Store Swapping**
-- `FlexStore<String, String> testStore = new FlexStoreImpl<>();`
-- `testStore.put("welcome", "Hola {0}");`
-- `loc.getStore().setFlexStore(testStore);`
-- `String welcome = loc.getValue("welcome", String.class, "Alice");`
-- `// Output: Hola Alice`
+
+```java
+FlexStore<String, String> testStore = new FlexStoreImpl<>();
+testStore.put("welcome", "Hola {0}");
+loc.getStore().setFlexStore(testStore);
+String welcome = loc.getValue("welcome", String.class, "Alice");
+// Output: Hola Alice
+```
 
 ### 3. Custom Parsers
 Extend `FlexDataParser` for additional formats (e.g., JSON, YAML).
 
 **Example: JSON Parser**
-- `public class JsonParser implements FlexDataParser<String> {`
-- `    private FlexDataLoader<String, String> loader;`
-- `    @Override`
-- `    public void setLoader(FlexDataLoader<String, String> loader) {`
-- `        this.loader = loader;`
-- `    }`
-- `    @Override`
-- `    public FlexStore<String, String> load(String source) throws IOException {`
-- `        String json = loader.load(source);`
-- `        FlexStore<String, String> store = new FlexStoreImpl<>();`
-- `        // Parse JSON (e.g., {"balance": "You have {0 [0=zero dollars, 1={0}.fmt.currency dollar, 2-4=few dollars, other={0}.fmt.currency dollars]} to the date {1}.fmt.date"}) to store`
-- `        // Implementation depends on JSON library (optional)`
-- `        return store;`
-- `    }`
-- `}`
-- `FlexConfiguration config = new FlexConfiguration();`
-- `config.setParser(new JsonParser());`
-- `config.loadConfiguration("config.json");`
-- `String result = config.getValue("message", "localhost");`
-- `// Output: Server at localhost`
+
+```java
+public class JsonParser implements FlexDataParser<String> {
+    private FlexDataLoader<String, String> loader;
+    @Override
+    public void setLoader(FlexDataLoader<String, String> loader) {
+        this.loader = loader;
+    }
+    @Override
+    public FlexStore<String, String> load(String source) throws IOException {
+        String json = loader.load(source);
+        FlexStore<String, String> store = new FlexStoreImpl<>();
+        // Parse JSON (e.g., {"balance": "You have {0 [0=zero dollars, 1={0}.fmt.currency dollar, 2-4=few dollars, other={0}.fmt.currency dollars]} to the date {1}.fmt.date"}) to store
+        // Implementation depends on JSON library (optional)
+        return store;
+    }
+}
+FlexConfiguration config = new FlexConfiguration();
+config.setParser(new JsonParser());
+config.loadConfiguration("config.json");
+String result = config.getValue("message", "localhost");
+// Output: Server at localhost
+```
 
 ## Performance
 - **Lookups**: ~2.2µs per `getValue`, supports 60 FPS (~16.6ms frame budget).
@@ -145,7 +175,7 @@ Extend `FlexDataParser` for additional formats (e.g., JSON, YAML).
 - **Unit Testing**: Swap stores to test configurations or languages.
 
 ## Comparison to Alternatives
-| Feature/Library             | stasha/flex | ICU4J | ResourceBundle | Spring Framework |
+| Feature/Library             | Flex | ICU4J | ResourceBundle | Spring Framework |
 |-----------------------------|-------------|-------|----------------|------------------|
 | Complex Pluralization        | Yes         | Yes   | Limited        | Yes              |
 | Nested Interpolation        | Yes         | No    | No             | Partial          |
