@@ -1,5 +1,7 @@
 package com.stasha.info.flexlocalization.store;
 
+import com.stasha.info.flex.store.FlexStoreImpl;
+import com.stasha.info.flex.store.FlexStringStoreImpl;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 

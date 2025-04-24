@@ -2,7 +2,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.stasha.info</groupId>
-    <artifactId>FlexLocalization</artifactId>
+    <artifactId>Flex</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
     <build>
@@ -28,6 +28,21 @@
                     <!--<showSuccess>false</showSuccess>-->
                 </configuration>
             </plugin>
+            <!--plugin>
+                <groupId>net.sourceforge.cobertura</groupId>
+                <artifactId>cobertura</artifactId>
+                <version>2.1.1</version>
+                <configuration>
+                    <quiet>true</quiet>
+                    <formats>
+                        <format>html</format>
+                        <format>xml</format>
+                    </formats>
+                    <instrumentation>
+                        <ignoreTrivial>true</ignoreTrivial>
+                    </instrumentation>
+                </configuration>
+            </plugin-->
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
@@ -69,6 +84,85 @@
                     <repoToken>${COVERALLS_KEY}</repoToken>
                 </configuration>
             </plugin>
+
+            <plugin>
+                <groupId>com.github.wvengen</groupId>
+                <artifactId>proguard-maven-plugin</artifactId>
+                <version>2.7.0</version>
+                <executions>
+                    <execution>
+                        <id>obfuscation-packaging</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>proguard</goal>
+                        </goals>
+                        <configuration>
+                            <proguardVersion>${tool.proguard.version}</proguardVersion>
+                            <obfuscate>true</obfuscate>
+                            <attach>true</attach>
+                            <appendClassifier>false</appendClassifier>
+                            <addMavenDescriptor>true</addMavenDescriptor>
+                            <injar>${project.build.finalName}.jar</injar>
+                            <injarNotExistsSkip>true</injarNotExistsSkip>
+
+                            <options>
+                                <option>-libraryjars ${java.home}/jmods/java.base.jmod(!**.jar;!module-info.class)</option>
+<!--                                <option>-keepdirectories</option>
+                                <option>-keeppackagenames org.apache.maven.plugin.my.MyMojo</option>
+                                <option>-keepnames class * implements org.apache.maven.plugin.AbstractMojo</option>
+                                <option>-keepclassmembers class * implements org.apache.maven.plugin.AbstractMojo {
+                                    private <![CDATA[<fields>]]>;
+                                    private <![CDATA[<methods>]]>;
+                                    }
+                                </option>
+                                <option>-keepparameternames</option>
+                                <option>-renamesourcefileattribute SourceFile</option>
+                                <option>-keepattributes Exceptions,InnerClasses,Signature,Deprecated,
+                                    SourceFile,LineNumberTable,*Annotation*,EnclosingMethod
+                                </option>
+                                <option>-target 23</option>
+-->                                <option>-keep public class * {
+                                    public protected *;
+                                    }
+                                </option><!--
+                                <option>-keepclassmembernames class * {
+                                    java.lang.Class class$(java.lang.String);
+                                    java.lang.Class class$(java.lang.String, boolean);
+                                    }
+                                </option>
+                                <option>-keepclasseswithmembernames,includedescriptorclasses class * {
+                                    native <![CDATA[<methods>]]>;
+                                    }
+                                </option>
+                                <option>-keepclassmembers,allowoptimization enum * {
+                                    public static **[] values();
+                                    public static ** valueOf(java.lang.String);
+                                    }
+                                </option>
+                                <option>-keepclassmembers class * implements java.io.Serializable {
+                                    static final long serialVersionUID;
+                                    private static final java.io.ObjectStreamField[] serialPersistentFields;
+                                    private void writeObject(java.io.ObjectOutputStream);
+                                    private void readObject(java.io.ObjectInputStream);
+                                    java.lang.Object writeReplace();
+                                    java.lang.Object readResolve();
+                                    }
+                                </option>-->
+                            </options>
+                        </configuration>
+                    </execution>
+                </executions>
+                <dependencies>
+                    <!-- https://mvnrepository.com/artifact/com.guardsquare/proguard-base -->
+                    <dependency>
+                        <groupId>com.guardsquare</groupId>
+                        <artifactId>proguard-base</artifactId>
+                        <version>7.7.0</version>
+                        <scope>runtime</scope>
+                    </dependency>
+                </dependencies>
+            </plugin>  
+
         </plugins>
     </build>
     <dependencies>
@@ -96,4 +190,5 @@
         <maven.compiler.release>23</maven.compiler.release>
         <exec.mainClass>com.stasha.info.flexlocalization.FlexLocalization</exec.mainClass>
     </properties>
+    <name>Flex</name>
 </project>
