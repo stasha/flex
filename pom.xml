@@ -92,7 +92,8 @@
                 <executions>
                     <execution>
                         <id>obfuscation-packaging</id>
-                        <phase>package</phase>
+                        <!--phase>package</phase-->
+                        <phase></phase>
                         <goals>
                             <goal>proguard</goal>
                         </goals>

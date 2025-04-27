@@ -1,6 +1,5 @@
-package com.stasha.info.flexlocalization;
+package com.stasha.info.flex;
 
-import com.stasha.info.flex.FlexConfiguration;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

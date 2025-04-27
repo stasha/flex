@@ -1,8 +1,8 @@
 package com.stasha.info.flex.loaders;
 
 import com.stasha.info.flex.store.FlexStore;
-import com.stasha.info.flex.parsers.FlexPropertiesParser;
-import com.stasha.info.flex.parsers.FlexDataParser;
+import com.stasha.info.flex.loaders.parsers.FlexPropertiesParser;
+import com.stasha.info.flex.loaders.parsers.FlexDataParser;
 import com.stasha.info.flex.store.FlexStringStore;
 import com.stasha.info.flex.store.FlexStringStoreImpl;
 import java.io.BufferedInputStream;

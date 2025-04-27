@@ -1,8 +1,7 @@
 package com.stasha.info.flex;
 
-import com.stasha.info.flex.formatters.FlexFormatImpl;
+import com.stasha.info.flex.formatters.FlexFormat;
 import com.stasha.info.flex.interpolators.FlexInterpolator;
-import com.stasha.info.flex.interpolators.FlexInterpolatorImpl;
 import com.stasha.info.flex.loaders.FlexDataLoader;
 import com.stasha.info.flex.loaders.FlexDataLoader.FlexDataListener;
 import com.stasha.info.flex.loaders.FlexDataLoaderImpl;
@@ -29,7 +28,7 @@ public abstract class Flex {
     /**
      * Interpolator used for interpolating string messages.
      */
-    private FlexInterpolator flexInterpolator = new FlexInterpolatorImpl();
+    private FlexInterpolator flexInterpolator = new FlexInterpolator();
 
     public Flex() {
         init();
@@ -47,7 +46,7 @@ public abstract class Flex {
 
         // add formatting to interpolator responsible for formating
         // values like date, time, decimals, currency...
-        flexInterpolator.setFlexFormat(new FlexFormatImpl());
+        flexInterpolator.setFlexFormat(new FlexFormat());
     }
 
     /**

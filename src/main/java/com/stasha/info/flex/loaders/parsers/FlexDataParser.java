@@ -1,4 +1,4 @@
-package com.stasha.info.flex.parsers;
+package com.stasha.info.flex.loaders.parsers;
 
 import com.stasha.info.flex.store.FlexStore;
 import java.io.IOException;

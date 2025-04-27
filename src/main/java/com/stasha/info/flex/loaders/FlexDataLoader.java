@@ -1,7 +1,7 @@
 package com.stasha.info.flex.loaders;
 
 import com.stasha.info.flex.store.FlexStore;
-import com.stasha.info.flex.parsers.FlexDataParser;
+import com.stasha.info.flex.loaders.parsers.FlexDataParser;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;

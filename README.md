@@ -1,6 +1,6 @@
 [![CircleCI](https://dl.circleci.com/status-badge/img/gh/stasha/flex/tree/master.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/gh/stasha/flex/tree/master)
 [![Coverage Status](https://coveralls.io/repos/github/stasha/flex/badge.svg)](https://coveralls.io/github/stasha/flex)
-# Flex: Lightweight Configuration and Localization for Java
+#!EXPERIMENTAL! Flex: Lightweight Configuration and Localization for Java
 
 **Flex** is a dependency-free Java library (~21KB) for **configuration** and **localization**, optimized for indie mobile games and resource-constrained environments (~2GB RAM, 60 FPS). It offers advanced **pluralization**, **nested interpolation**, **formatting**, and **asset localization** (sound, video, texture), alongside dynamic configuration, with fast performance (~2.2µs per lookup) and a minimal footprint.
 

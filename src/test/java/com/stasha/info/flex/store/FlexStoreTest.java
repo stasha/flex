@@ -1,4 +1,4 @@
-package com.stasha.info.flexlocalization.store;
+package com.stasha.info.flex.store;
 
 import com.stasha.info.flex.store.FlexStoreImpl;
 import com.stasha.info.flex.store.FlexStringStoreImpl;
