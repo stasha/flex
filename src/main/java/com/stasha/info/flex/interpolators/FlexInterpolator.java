@@ -18,7 +18,7 @@ public class FlexInterpolator {
 
     private FlexFormat flexFormat;
     private FlexStringTemplateParser parser = new FlexStringTemplateParser();
-    
+
     private static final Pattern FORMAT_TYPE_PATTERN = Pattern.compile("(fmt\\.(date|time|decimal|currency)).*");
 
     private static final Pattern UNESCAPE = Pattern.compile("\\\\");
@@ -49,15 +49,17 @@ public class FlexInterpolator {
     public String interpolate(String key, Integer index, FlexStore<String, String> store, Object... arguments) {
         // retrieves string from store
         String str = (String) store.getOrDefault(key, key);
-        FlexStore<String, Object> objectStore = ((FlexStringStore) store).getObjectStore();
-        FlexParsedTemplate parsedTpl = (FlexParsedTemplate) objectStore.get(key);
+        FlexStore<String, Object> cacheStore = ((FlexStringStore) store).getCacheStore();
+        FlexParsedTemplate parsedTpl = (FlexParsedTemplate) cacheStore.get(key);
 
         if (parsedTpl == null) {
             parsedTpl = parser.parse(str);
-            objectStore.put(key, parsedTpl);
+            if (parsedTpl != null) {
+                cacheStore.put(key, parsedTpl);
+            }
         }
 
-        String indexValue = parsedTpl.getValue();
+        String indexValue = parsedTpl == null ? null : parsedTpl.getValue();
         // fast check if string contains markers for interpolation
         if (indexValue != null) {
             indexValue = indexValue.trim();
@@ -80,7 +82,7 @@ public class FlexInterpolator {
                 String cacheKey = new StringBuilder("plc_").append(argAtIndex).append(options.toString()).toString();
 
                 // get cached value for plural
-                String result = (String) store.getOrDefault(cacheKey, null);
+                String result = (String) cacheStore.getOrDefault(cacheKey, null);
                 if (result == null) {
                     String option = options.getValue(argAtIndex);
                     argAtIndex = interpolate(option, index, store, arguments);
@@ -101,7 +103,6 @@ public class FlexInterpolator {
                     // fmt.date.short = dd.MM.yy
                     // fmt.time.hours = HH
                     // ...
-                    //String formatType = format.replaceAll("(fmt\\.(date|time|decimal|currency)).*", "$1");
                     String formatType = FORMAT_TYPE_PATTERN.matcher(format).replaceAll("$1");
                     List<String> op = ((List<String>) ((FlexStringStore) store).getObject(new StringBuilder(format).append("$options").toString()));
                     if (op != null) {
@@ -131,7 +132,7 @@ public class FlexInterpolator {
                     // for example user could override currency format
                     // with fmt.currency="${0}.fmt.decimal
                     String userFormat = interpolate(format, index, store, arguments);
-                    if(formatType == null){
+                    if (formatType == null) {
                         formatType = userFormat;
                     }
 
@@ -151,7 +152,10 @@ public class FlexInterpolator {
             // This allows arbitrary interpolation marker nesting for more
             // complex localization logic.
 //            str = interpolate(new StringBuilder(str).replace(m.start(), m.end(), String.valueOf(argAtIndex)).toString(), null, store, arguments);
-            str = interpolate(str.replace(parsedTpl.getStrToReplace(), String.valueOf(argAtIndex)), null, store, arguments);
+            int start = str.indexOf(parsedTpl.getStrToReplace());
+            int end = start + parsedTpl.getStrToReplace().length();
+            String finalStr = new StringBuilder(str).replace(start, end, String.valueOf(argAtIndex)).toString();
+            str = interpolate(finalStr, null, store, arguments);
         }
 
         // returns fully localized string.

@@ -19,6 +19,8 @@ public interface FlexStringStore extends FlexStore<String, String> {
      * @return
      */
     <T> FlexStore<String, T> getObjectStore();
+    
+    <T> FlexStore<String, T> getCacheStore();
 
     /**
      * Returns a string from string store.

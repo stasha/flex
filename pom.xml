@@ -12,7 +12,15 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.14.0</version>
                 <configuration>
-                    <debug>true</debug>
+                    <source>23</source>
+                    <target>23</target>
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>org.openjdk.jmh</groupId>
+                            <artifactId>jmh-generator-annprocess</artifactId>
+                            <version>1.37</version>
+                        </path>
+                    </annotationProcessorPaths>
                 </configuration>
             </plugin>
             <plugin>
@@ -27,6 +35,31 @@
                 <configuration>
                     <!--<showSuccess>false</showSuccess>-->
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>3.5.0</version>
+                <executions>
+                    <execution>
+                        <id>run-benchmarks</id>
+                        <!--<phase>integration-test</phase>-->
+                        <phase></phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <configuration>
+                            <classpathScope>test</classpathScope>
+                            <executable>java</executable>
+                            <arguments>
+                                <argument>-classpath</argument>
+                                <classpath />
+                                <argument>org.openjdk.jmh.Main</argument>
+                                <argument>.*</argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
             <!--plugin>
                 <groupId>net.sourceforge.cobertura</groupId>
@@ -92,7 +125,7 @@
                 <executions>
                     <execution>
                         <id>obfuscation-packaging</id>
-                        <!--phase>package</phase-->
+                        <!--<phase>package</phase>-->
                         <phase></phase>
                         <goals>
                             <goal>proguard</goal>
@@ -108,21 +141,22 @@
 
                             <options>
                                 <option>-libraryjars ${java.home}/jmods/java.base.jmod(!**.jar;!module-info.class)</option>
-<!--                                <option>-keepdirectories</option>
-                                <option>-keeppackagenames org.apache.maven.plugin.my.MyMojo</option>
-                                <option>-keepnames class * implements org.apache.maven.plugin.AbstractMojo</option>
-                                <option>-keepclassmembers class * implements org.apache.maven.plugin.AbstractMojo {
-                                    private <![CDATA[<fields>]]>;
-                                    private <![CDATA[<methods>]]>;
-                                    }
-                                </option>
-                                <option>-keepparameternames</option>
-                                <option>-renamesourcefileattribute SourceFile</option>
-                                <option>-keepattributes Exceptions,InnerClasses,Signature,Deprecated,
-                                    SourceFile,LineNumberTable,*Annotation*,EnclosingMethod
-                                </option>
-                                <option>-target 23</option>
--->                                <option>-keep public class * {
+                                <!--                                <option>-keepdirectories</option>
+                                                                <option>-keeppackagenames org.apache.maven.plugin.my.MyMojo</option>
+                                                                <option>-keepnames class * implements org.apache.maven.plugin.AbstractMojo</option>
+                                                                <option>-keepclassmembers class * implements org.apache.maven.plugin.AbstractMojo {
+                                                                    private <![CDATA[<fields>]]>;
+                                                                    private <![CDATA[<methods>]]>;
+                                                                    }
+                                                                </option>
+                                                                <option>-keepparameternames</option>
+                                                                <option>-renamesourcefileattribute SourceFile</option>
+                                                                <option>-keepattributes Exceptions,InnerClasses,Signature,Deprecated,
+                                                                    SourceFile,LineNumberTable,*Annotation*,EnclosingMethod
+                                                                </option>
+                                                                <option>-target 23</option>
+                                -->                                
+                                <option>-keep public class * {
                                     public protected *;
                                     }
                                 </option><!--
@@ -167,6 +201,22 @@
         </plugins>
     </build>
     <dependencies>
+        <dependency>
+            <groupId>org.openjdk.jmh</groupId>
+            <artifactId>jmh-core</artifactId>
+            <version>1.37</version>
+        </dependency>
+        <dependency>
+            <groupId>org.openjdk.jmh</groupId>
+            <artifactId>jmh-generator-annprocess</artifactId>
+            <version>1.37</version>
+        </dependency>
+        <dependency>
+            <groupId>com.ibm.icu</groupId>
+            <artifactId>icu4j</artifactId>
+            <version>77.1</version>
+            <scope>test</scope>
+        </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>

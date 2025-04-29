@@ -33,6 +33,10 @@ public class FlexStringTemplateOptions {
     private String[] options;
     private Map<String, String> data;
 
+    public Map<String, String> getData() {
+        return data;
+    }
+
     public FlexStringTemplateOptions() {
     }
 
@@ -64,6 +68,11 @@ public class FlexStringTemplateOptions {
     }
 
     public String getValue(Object value) {
+        if (value instanceof String val) {
+            return this.data.computeIfAbsent(val, k -> {
+                return this.getValue(value, this.data);
+            });
+        }
         return this.getValue(value, this.data);
     }
 
@@ -86,16 +95,51 @@ public class FlexStringTemplateOptions {
     }
 
     public static String match(Object value, String[] options) {
+
         String val = String.valueOf(value);
-        if(val.startsWith(" ") || val.endsWith(" ")){
+        if (val.startsWith(" ") || val.endsWith(" ")) {
             val = val.trim();
         }
 
         if (options.length > 0) {
             for (int i = 0; i < options.length; ++i) {
                 String k = options[i];
-                if (k.equals("other")) {
-                    return k;
+
+                boolean isRange = k.contains("-");
+                boolean isPartial = k.contains("_");
+                boolean isMath = k.contains("~");
+
+                // single value
+                if (!isRange) {
+                    if (!isPartial && !isMath) {
+                        if (val.equals(k)) {
+                            return k;
+                        } else if (k.equals("other")) {
+                            return k;
+                        } else if (isPartial) {
+                            String v = k;
+                            // starts/ends with number
+                            if (k.startsWith("_")) {
+                                v = k.substring(1, k.length());
+                            } else if (k.endsWith("_")) {
+                                v = k.substring(0, k.length() - 1);
+                            }
+                            if (val.equals(v)) {
+                                return v;
+                            }
+                        } else if (k.contains("~")) {
+                            // flor/max
+                        }
+                    }
+                } else {
+                    int _indexof = k.indexOf("-");
+                    String key = k.substring(0, _indexof);
+                    String vl = k.substring(_indexof + 1, k.length());
+                    String[] kv = new String[]{key, vl};
+                    String result = match(value, kv);
+                    if (result != null) {
+                        return k;
+                    }
                 }
 
                 boolean fromStartsWith = false;

@@ -11,7 +11,8 @@ import java.util.ArrayList;
  */
 public class FlexStringStoreImpl extends FlexStoreImpl<String> implements FlexStringStore {
 
-    private FlexStore<String, Object> objectStore = new FlexStoreImpl<>();
+    private FlexStore<String, Object> objectStore = new FlexObjectStore<>();
+    private FlexStore<String, Object> cacheStore = new FlexCacheStore<>();
     private FlexStringTemplateParser parser = new FlexStringTemplateParser();
 
     @Override
@@ -43,6 +44,15 @@ public class FlexStringStoreImpl extends FlexStoreImpl<String> implements FlexSt
     @Override
     public <T> FlexStore<String, T> getObjectStore() {
         return (FlexStore<String, T>) this.objectStore;
+    }
+
+    @Override
+    public <T> FlexStore<String, T> getCacheStore() {
+        return (FlexStore<String, T>) cacheStore;
+    }
+
+    public <T> void setCacheStore(FlexStore<String, T> cacheStore) {
+        this.cacheStore = (FlexStore<String, Object>) cacheStore;
     }
 
     @Override

@@ -34,11 +34,11 @@ public class FlexStringTemplateParser {
      * no pluralization and formatting)
      */
     private static final Pattern SIMPLE_INTERPOLATION_PATTERN = Pattern.compile("(?<!\\\\)\\{\\s*(\\d+)\\s*\\}");
-    
+
     private static final Pattern FORMAT_SPLIT_PATTERN = Pattern.compile("&");
 
     public FlexParsedTemplate parse(String str) {
-        if (str != null) {
+        if (str != null && str.contains("{")) {
             if (str.contains("{") && !str.contains("[") && !str.contains("}.")) {
                 // Fast path for simple {0}, {1}, etc.
                 Matcher m = SIMPLE_INTERPOLATION_PATTERN.matcher(str);
@@ -49,49 +49,45 @@ public class FlexStringTemplateParser {
                 }
             }
 
-            // fast check if string contains markers for interpolation
-            if (str.contains("{")) {
+            // match localization pattern against string
+            Matcher m = LOCALIZATION_PATTERN.matcher(str);
 
-                // match localization pattern against string
-                Matcher m = LOCALIZATION_PATTERN.matcher(str);
+            // check if string contains interpolation markers 
+            if (m.find()) {
+                String strToReplace = m.group();
+                // extrac index {0} = 0, {n} = n from matcher
+                String value = m.group(2).trim();
 
-                // check if string contains interpolation markers 
-                if (m.find()) {
-                    String strToReplace = m.group();
-                    // extrac index {0} = 0, {n} = n from matcher
-                    String value = m.group(2).trim();
-
-                    // extract plurals from matcher
-                    FlexStringTemplateOptions options = null;
-                    try {
-                        options = new FlexStringTemplateOptions(m.group(5));
-                    } catch (ParseOptionsException ex) {
-                        String g = m.group(1);
-                        if (g.startsWith("{") && g.endsWith("}")) {
-                            value = g.substring(1, g.length() - 1);
-                        }
+                // extract plurals from matcher
+                FlexStringTemplateOptions options = null;
+                try {
+                    options = new FlexStringTemplateOptions(m.group(5));
+                } catch (ParseOptionsException ex) {
+                    String g = m.group(1);
+                    if (g.startsWith("{") && g.endsWith("}")) {
+                        value = g.substring(1, g.length() - 1);
                     }
-
-                    // extract formatters from matcher
-                    String fmt = m.group(9);
-
-                    String[] format = null;
-                    if (fmt != null) {
-                        if (fmt.endsWith(".")) {
-                            fmt = fmt.substring(0, fmt.length() - 1);
-                        }
-
-                        if (fmt != null) {
-                            if (fmt.contains("&")) {
-                                format = FORMAT_SPLIT_PATTERN.split(fmt);
-                            } else {
-                                format = new String[]{fmt};
-                            }
-                        }
-                    }
-
-                    return new FlexParsedTemplate(strToReplace, value, options, format);
                 }
+
+                // extract formatters from matcher
+                String fmt = m.group(9);
+
+                String[] format = null;
+                if (fmt != null) {
+                    if (fmt.endsWith(".")) {
+                        fmt = fmt.substring(0, fmt.length() - 1);
+                    }
+
+                    if (fmt != null) {
+                        if (fmt.contains("&")) {
+                            format = FORMAT_SPLIT_PATTERN.split(fmt);
+                        } else {
+                            format = new String[]{fmt};
+                        }
+                    }
+                }
+
+                return new FlexParsedTemplate(strToReplace, value, options, format);
             }
         }
 

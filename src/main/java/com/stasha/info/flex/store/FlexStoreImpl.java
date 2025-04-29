@@ -1,6 +1,5 @@
 package com.stasha.info.flex.store;
 
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,7 +15,7 @@ import java.util.stream.Collectors;
  */
 public class FlexStoreImpl<V> implements FlexStore<String, V> {
 
-    private final Map<String, V> store = new LinkedHashMap<>(500);
+    private final Map<String, V> store = new LinkedHashMap<>(10);
 
     protected Map<String, V> getStore() {
         return store;
@@ -24,6 +23,7 @@ public class FlexStoreImpl<V> implements FlexStore<String, V> {
 
     @Override
     public void put(String key, V value) {
+//        System.out.println("put: " + key + "=" + value + ", size=" + store.size());
         getStore().put(key, value);
     }
 
@@ -54,12 +54,12 @@ public class FlexStoreImpl<V> implements FlexStore<String, V> {
 
     @Override
     public V get(String key) {
-        return getStore().get(key);
+            return getStore().get(key);
     }
 
     @Override
     public V getOrDefault(String key, V defaultValue) {
-        return getStore().getOrDefault(key, defaultValue);
+            return getStore().getOrDefault(key, defaultValue);
     }
 
     @Override

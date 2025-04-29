@@ -35,6 +35,10 @@ public class FlexParsedTemplate {
     public String[] getFormats() {
         return formats;
     }
+    
+    public boolean isSimple() {
+        return (options == null || !options.hasOptions()) && (formats == null || formats.length > 0);
+    }
 
     @Override
     public String toString() {
